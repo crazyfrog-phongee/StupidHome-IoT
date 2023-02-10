@@ -1,0 +1,4 @@
+Removed Pin From Net: NetName=Digital_MQ2 Pin=C7-1
+Removed Pin From Net: NetName=Analog_MQ2 Pin=C7-2
+Added Pin To Net: NetName=Analog_MQ2 Pin=C7-1
+Added Pin To Net: NetName=Digital_MQ2 Pin=C7-2
