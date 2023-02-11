@@ -1,0 +1,46 @@
+1.Giới thiệu, nói tổng quan về mô hình. (Quay video thực tế)
+	Các chức năng yêu cầu cơ bản của đề tài đã đạt
+	Các chức năng mở rộng: OTA, Smartconfig
+
+2.Giới thiệu chi tiết (nói dựa trên các hình ảnh chèn vào)
+	Các node
+		Gồm mấy node?
+		Mỗi node tượng trưng cho phòng nào? Tích hợp các cảm biến và chức năng nào?
+		Giao tiếp với các cảm biến?
+		(Demo hình ảnh giao tiếp thành công và thu được dữ liệu từ cảm biến).
+		Kết nối publish/subcribe tới MQTT Broker.
+		(Demo hình ảnh các node, node kết nối thành công với MQTT Broker).
+
+	Gate
+		Sử dụng ESP32 kết nối publish/subscribe tới MQTT Broker.
+		(Demo hình ảnh gate kết nối thành công với MQTT Broker).
+
+	MQTT Broker sử dụng: 
+		Tổ chức topic như thế nào 
+		Chỗ publish? Chỗ subscribe?
+		(Demo hình ảnh)
+
+	Cloud sử dụng:
+		Tổ chức dữ liệu hiển thị trên cloud như thế nào?
+		Export data?
+		(Demo hình ảnh)
+		
+	App sử dụng:
+		Thiết kế giao diện app như thế nào?
+			Mỗi Tab thể hiện cho 1 node? Đồ thị, biểu tượng ra sao?
+		Có thời gian thực tích hợp trên app?
+		(Demo hình ảnh)
+
+3.Giải thích luồng dữ liệu truyền nhận của hệ thống? (nói dựa trên hình ảnh chèn vào)
+
+4.Demo chi tiết thực tế và các kết quả đã đạt được? (Quay video thực tế)
+	Xây dựng, nói qua các kịch bản đã thử nghiệm?
+
+	Số bản tin trao đổi? (Có hình ảnh demo chi tiết chèn vào)
+
+	Có các tính năng nâng cao nào? (Có video demo chi tiết)
+
+	Mô hình đã đạt được các kết quả như thế nào? Hoàn thành các yêu cầu cơ bản của đề tài thầy đã giao chưa?
+
+5.Kết luận...
+	
