@@ -6,6 +6,10 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 
+#include <DHT.h>
+#include <Adafruit_Sensor.h>
+#include <MQUnifiedsensor.h>
+
 #define DHTPIN                    25
 #define DHTTYPE                   DHT11
 
@@ -18,11 +22,24 @@
 
 #define LIGHTPIN                  27
 
+#define RELAYPIN                  32
 
 const char* ssid = "Dao Van Quan";
 const char* password = "88888888";
 
+typedef enum
+{
+  DISABLE,
+  ENABLE
+} status_control_t;
+
 WiFiClient wifiClient;
 PubSubClient client(wifiClient);
+
+DHT dht(DHTPIN, DHTTYPE);
+MQUnifiedsensor MQ2(BOARD, VOLTAGE_RESOLUTION, ADC_BIT_RESOLUTION, GASPIN, TYPE);
+
+status_control_t status_control;
+uint8_t lamp_state = 0;
 
 #endif

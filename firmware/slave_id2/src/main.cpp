@@ -1,24 +1,7 @@
 
 #include "main.h"
 #include "mqtt.h"
-
-#include <DHT.h>
-#include <Adafruit_Sensor.h>
-#include <MQUnifiedsensor.h>
-#include "LiquidCrystal_I2C.h"
-
-typedef enum
-{
-  DISABLE,
-  ENABLE
-} status_control_t;
-
-DHT dht(DHTPIN, DHTTYPE);
-MQUnifiedsensor MQ2(BOARD, VOLTAGE_RESOLUTION, ADC_BIT_RESOLUTION, GASPIN, TYPE);
-LiquidCrystal_I2C lcd(0x27, 16, 2);
-
-status_control_t status_control;
-uint8_t lamp_state = 0;
+#include "lcd.h"
 
 void temp_task(void *arg);
 void gas_task(void *arg);
@@ -31,9 +14,9 @@ void setup()
   pinMode(LED_BUILTIN, OUTPUT);
   // pinMode(GASPIN, INPUT);
   pinMode(LIGHTPIN, INPUT);
+  pinMode(RELAYPIN, OUTPUT);
 
-  lcd.backlight(); // turn on lcd backlight
-  lcd.init();      // initialize lcd
+  initLCD();
 
   setup_wifi();
   client.setServer(MQTT_SERVER, MQTT_PORT);
@@ -75,16 +58,7 @@ void temp_task(void *arg)
     Serial.print(t);
     Serial.println(F("°C "));
 
-    lcd.clear();
-    lcd.setCursor(0, 0); // set the cursor on the first row and column
-    lcd.print("Humidity: ");
-    lcd.print(h, 1); // print the humidity
-    lcd.print("%");
-    lcd.setCursor(0, 1); // set the cursor on the second row and first column
-    lcd.print("Temp:     ");
-    lcd.print(t, 1); // print the temperature
-    lcd.print(char(223));
-    lcd.print("C");
+    displayLCD(h, t);
 
     vTaskDelay(10000 / portTICK_PERIOD_MS);
   }
@@ -130,10 +104,18 @@ void light_task(void *arg)
     }
     else if (status_control == ENABLE)
     {
-      Serial.println("Hello ENABLED");
+      Serial.println("Enable Lamp Control Mode");
       state = (lamp_state == 1) ? "1" : "0";
       client.publish(MQTT_LED_TOPIC, state.c_str());
       digitalWrite(LED_BUILTIN, lamp_state);
+    }
+
+    if (strcmp(state.c_str(), "1") == 0)
+    {
+      digitalWrite(RELAYPIN, HIGH);
+    } else if (strcmp(state.c_str(), "0") == 0)
+    {
+      digitalWrite(RELAYPIN, LOW);
     }
 
     vTaskDelay(10000 / portTICK_PERIOD_MS);
