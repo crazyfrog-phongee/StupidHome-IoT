@@ -16,6 +16,7 @@
 #define MQTT_HUMIDITY_TOPIC_NODEID2     "NodeID2/Humid"
 #define MQTT_LED_TOPIC                  "NodeID2/LED"
 
+#define MQTT_OTA_TOPIC                  "Gate/OTA_Version"
 
 extern const char* ssid;
 extern const char* password;

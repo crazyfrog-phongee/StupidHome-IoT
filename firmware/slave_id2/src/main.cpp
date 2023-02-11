@@ -5,14 +5,18 @@
 #include <DHT.h>
 #include <Adafruit_Sensor.h>
 #include <MQUnifiedsensor.h>
+#include "LiquidCrystal_I2C.h"
 
-typedef enum {
+typedef enum
+{
   DISABLE,
   ENABLE
 } status_control_t;
 
 DHT dht(DHTPIN, DHTTYPE);
 MQUnifiedsensor MQ2(BOARD, VOLTAGE_RESOLUTION, ADC_BIT_RESOLUTION, GASPIN, TYPE);
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
 status_control_t status_control;
 uint8_t lamp_state = 0;
 
@@ -28,6 +32,9 @@ void setup()
   // pinMode(GASPIN, INPUT);
   pinMode(LIGHTPIN, INPUT);
 
+  lcd.backlight(); // turn on lcd backlight
+  lcd.init();      // initialize lcd
+
   setup_wifi();
   client.setServer(MQTT_SERVER, MQTT_PORT);
   client.setCallback(callback);
@@ -36,7 +43,6 @@ void setup()
   xTaskCreate(temp_task, "TempTask", 1024 * 5, NULL, 1, NULL);
   // xTaskCreate(gas_task, "GasTask", 1024 * 5, NULL, 2, NULL);
   xTaskCreate(light_task, "LightTask", 1024 * 5, NULL, 2, NULL);
-
 }
 
 void loop()
@@ -68,7 +74,18 @@ void temp_task(void *arg)
     Serial.print(F("%  Temperature: "));
     Serial.print(t);
     Serial.println(F("°C "));
-    
+
+    lcd.clear();
+    lcd.setCursor(0, 0); // set the cursor on the first row and column
+    lcd.print("Humidity: ");
+    lcd.print(h, 1); // print the humidity
+    lcd.print("%");
+    lcd.setCursor(0, 1); // set the cursor on the second row and first column
+    lcd.print("Temp:     ");
+    lcd.print(t, 1); // print the temperature
+    lcd.print(char(223));
+    lcd.print("C");
+
     vTaskDelay(10000 / portTICK_PERIOD_MS);
   }
 }
@@ -108,16 +125,17 @@ void light_task(void *arg)
     {
       int value = digitalRead(LIGHTPIN);
       digitalWrite(LED_BUILTIN, value);
-      state = (value == 1)? "1" : "0";
+      state = (value == 1) ? "1" : "0";
       client.publish(MQTT_LED_TOPIC, state.c_str());
-    } else if (status_control == ENABLE)
+    }
+    else if (status_control == ENABLE)
     {
       Serial.println("Hello ENABLED");
-      state = (lamp_state == 1)? "1" : "0";
+      state = (lamp_state == 1) ? "1" : "0";
       client.publish(MQTT_LED_TOPIC, state.c_str());
       digitalWrite(LED_BUILTIN, lamp_state);
     }
-    
+
     vTaskDelay(10000 / portTICK_PERIOD_MS);
   }
 }
@@ -129,7 +147,7 @@ void callback(char *topic, byte *payload, unsigned int length)
   Serial.print("] ");
 
   String data = "";
-  
+
   for (int i = 0; i < length; i++)
   {
     Serial.print((char)payload[i]);
@@ -145,11 +163,12 @@ void callback(char *topic, byte *payload, unsigned int length)
       if (strcmp(data.c_str(), "ON") == 0)
       {
         lamp_state = 1;
-      } else 
+      }
+      else
       {
         lamp_state = 0;
       }
-    } 
+    }
     else if (strcmp(data.c_str(), "disable") == 0)
     {
       status_control = DISABLE;

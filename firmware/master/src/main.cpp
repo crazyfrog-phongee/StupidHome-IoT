@@ -1,30 +1,27 @@
 
 #include "main.h"
 #include "mqtt.h"
-#include <HTTPUpdate.h>
+#include "ota.h"
 
-typedef enum {
-  FALSE,
-  TRUE
-} recv_node_t;
-
-String urlThingSpeak_nodeID1 = "https://api.thingspeak.com/update?api_key=EZKH261OZ4RXTTT7";
-String urlThingSpeak_nodeID2 = "https://api.thingspeak.com/update?api_key=W0URL6A5PTC0OYZG";
 String url = "";
 String para_nodeid1 = "";
 String para_nodeid2 = "";
+
 recv_node_t recv_temp_nodeid[2][3];
 
 String httpGETRequest(const char* url);
+void ota_task(void *arg);
 
 void setup() {
   Serial.begin(9600);
-
 
   setup_wifi();
   client.setServer(MQTT_SERVER, MQTT_PORT);
   client.setCallback(callback);
   connect_to_broker();
+
+  OTADRIVE.setInfo(key, version);
+  xTaskCreate(ota_task, "OTA Task", 1024 * 5, NULL, 1, NULL);
 }
 
 void loop() {
@@ -109,4 +106,24 @@ String httpGETRequest(const char* url)
   }
   http.end();
   return responseBody;
+}
+
+void ota_task(void *arg)
+{
+  Serial.println("Hello from OTA Task");
+
+  for(;;)
+  {
+    Serial.print("Ver: ");
+    Serial.println(version);
+    if (WiFi.status() == WL_CONNECTED)
+    {
+      Serial.println("Check update version");
+      OTADRIVE.updateFirmware();
+    }
+
+    client.publish(MQTT_OTA_TOPIC, version.c_str());
+
+    vTaskDelay(180000 / portTICK_PERIOD_MS);
+  }
 }

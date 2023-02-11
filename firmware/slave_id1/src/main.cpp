@@ -4,10 +4,9 @@
 
 #include <DHT.h>
 #include <Adafruit_Sensor.h>
-#include "LiquidCrystal_I2C.h"
+
 
 DHT dht(DHTPIN, DHTTYPE);
-LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 void temp_task(void *arg);
 void gas_task(void *arg);
@@ -21,9 +20,6 @@ void setup()
   // pinMode(GASPIN, INPUT);
   pinMode(LIGHTPIN, INPUT);
   pinMode(BUZZERPIN, OUTPUT);
-
-  lcd.backlight();// turn on lcd backlight
-  lcd.init();// initialize lcd
 
   setup_wifi();
   client.setServer(MQTT_SERVER, MQTT_PORT);
@@ -65,17 +61,7 @@ void temp_task(void *arg)
     Serial.print(t);
     Serial.println(F("°C "));
 
-    lcd.clear();
-    lcd.setCursor(0,0);// set the cursor on the first row and column
-    lcd.print("Humidity: ");
-    lcd.print(h);//print the humidity
-    lcd.print("%");
-    lcd.setCursor(0,1);//set the cursor on the second row and first column
-    lcd.print("Temp:     ");
-    lcd.print(t);//print the temperature
-    lcd.print(char(223));
-    lcd.print("C");
-
+    
     vTaskDelay(10000 / portTICK_PERIOD_MS);
   }
 }
