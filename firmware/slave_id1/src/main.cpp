@@ -1,6 +1,7 @@
 
 #include "main.h"
 #include "mqtt.h"
+#include "lcd.h"
 
 #include <DHT.h>
 #include <Adafruit_Sensor.h>
@@ -25,6 +26,8 @@ void setup()
   client.setServer(MQTT_SERVER, MQTT_PORT);
   client.setCallback(callback);
   connect_to_broker();
+
+  initLCD();
 
   xTaskCreate(temp_task, "TempTask", 1024 * 5, NULL, 1, NULL);
   xTaskCreate(gas_task, "GasTask", 1024 * 5, NULL, 2, NULL);
@@ -61,7 +64,6 @@ void temp_task(void *arg)
     Serial.print(t);
     Serial.println(F("°C "));
 
-    
     vTaskDelay(10000 / portTICK_PERIOD_MS);
   }
 }
@@ -69,7 +71,7 @@ void temp_task(void *arg)
 void gas_task(void *arg)
 {
   Serial.println("Hello from Gas Measurement Task");
-
+  char* status_msg = "";
   for (;;)
   {
     int sensor_Aout = analogRead(GASPIN); /* Analog value read function */
@@ -80,15 +82,19 @@ void gas_task(void *arg)
     if (sensor_Aout > 1800)
     {
       Serial.println("Gas");
+      status_msg = "Nguy Hiem";
       digitalWrite(LED_BUILTIN, LOW);
       digitalWrite(BUZZERPIN, HIGH);
     }
     else
     {
       Serial.println("No Gas");
+      status_msg = "An Toan";
       digitalWrite(LED_BUILTIN, HIGH);
       digitalWrite(BUZZERPIN, LOW);
     }
+
+    displayLCD(sensor_Aout, status_msg);
 
     vTaskDelay(10000 / portTICK_PERIOD_MS);
   }
