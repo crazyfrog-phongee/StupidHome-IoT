@@ -1,0 +1,67 @@
+Sơ đồ khối mô tả một cách khái quát về mối liên kết giữa các thành phần của hệ thống, 
+chúng được tách ra làm 4 phần riêng biệt:
+
+-	Khối thiết bị Device có vai trò các physical devices là các sensor nodes để đo các thông số môi trường như nhiệt độ, độ ẩm, ánh sáng, khí gas để gửi dữ liệu về Gateway để đánh giá. 
+	Các cơ cấu chấp hành như relay để điều khiển bật tắt đèn được điều khiển thông qua internet hoặc điều khiển local hoặc công tắc vật lý khi không có internet.
+
+- 	Khối Gateway: vai trò nhận dữ liệu các topic từ các Device Publisher đến và Gateway 
+	sẽ đẩy các topic đó lên Cloud thông qua giao thức HTTP POST Client.
+
+-	Khối Cloud và App: lưu trữ, hiển thị các cơ sở dữ liệu (dữ liệu thông số môi trường như nhiệt độ, độ ẩm, ánh sáng, …) 
+	từ xa thông qua Internet và điều khiển các thiết bị qua Internet; xuất dữ liệu ra file.
+
+
+
+Cụ thể,
+	- Khối Device gồm cảm biến nhiệt độ, độ ẩm DHT11 và cảm biến khí ga MQ2, cảm biến ánh sáng kết hợp với cơ chấp chấp hành relay 5V
+	MCU sẽ đọc các tín hiệu analog, digital từ các cảm biến và hiển thị dữ liệu đo được ra màn hình LCD
+
+	- Khối Gateway: sử dụng ESP32 làm gateway, và có nhiệm vụ subcribe tới HiveMQ Broker để nhận dữ liệu
+
+	- Khối Cloud: sử dụng Cloud ThingSpeak, giao tiếp với Gateway thông qua cơ chế Client/Server của giao thức HTTP Post
+
+	- Khối App/Webserver: sử dụng platform IoT Node-red để build giao diện web/app hiển thị dữ liệu.
+
+
+
+1. Quá trình lắp đặt hệ thống
+Trên hình là quá trình lắp đặt hệ thống của nhóm em, mô hình tổng thể và chúng em sẽ debug hệ thống thông qua giao tiếp cổng COM Hercules với máy tính.
+2. Kết quả khi hệ thống hoạt động thực tế
+	
+	- Ở NodeID1, giao tiếp với các cảm biến thành công và hiển thị trên màn hình LCD
+
+	- Ở NodeID2, giao tiếp với các cảm biến thành công và điều khiển remote qua internet cũng như local đối với cơ cấu chấp hành relay bật tắt đèn
+
+	- Ở Gateway, 
+	hình phía trên là message topic gateway nhận được qua MQTT Broker từ các Node gửi đến và ngay sau đó, gateway sẽ request đến server để
+	gửi data lên với nội dung URL Encoded. Server gửi Response Code phản hồi về cho Gateway. Ở trên hình, 200 tương ứng với trạng thái request đã được tiếp nhận
+	và xử lý thành công
+
+	hình phía dưới là quá trình check update version OTA của gateway, chu kỳ check version nhóm em config là 5 phút 1 lần check. 
+	Version hiện tại đang là 1.0.3 hiển thị ở màn hình Serial
+
+	- Đây là kết quả ở MQTT Broker, các message được gửi đến và các topic được đăng ký.
+	
+	- Đây là dữ liệu được cập nhật ở Cloud. Có thể truy xuất dữ liệu thông qua chức năng export recent data và đẩy lên database MySQL server
+	
+	- Đây là giao diện của webserver và app nhóm em đã build bằng platform IoT Node - red. Dữ liệu cũng được đồng bộ và hiển thị chi tiết ở đây.
+
+	- Ngoài ra, nhóm chúng em mở rộng thêm tính năng OTA, thuận lợi cho quá trình cập nhật firmware toàn hệ thống. Nhóm em sử dụng OTADrive 
+	để upload bản firmware và mỗi khi hệ thống request đến, nếu có version mới sẽ tự động update
+
+
+3. Sau đây là video demo của nhóm em
+
+
+Phần 5: Hạn chế và hướng phát triển 
+	
+	
+
+
+
+
+
+
+
+
+
