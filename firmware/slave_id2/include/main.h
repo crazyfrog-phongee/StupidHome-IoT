@@ -21,16 +21,17 @@
 #define RatioMQ2CleanAir          (9.83) //RS / R0 = 9.83 ppm
 
 #define LIGHTPIN                  27
-
 #define RELAYPIN                  32
+#define BUTTONPIN                 26
 
-const char* ssid = "Dao Van Quan";
+const char* ssid = "Dao Van Qua";
 const char* password = "88888888";
 
 typedef enum
 {
   DISABLE,
-  ENABLE
+  ENABLE,
+  LOCAL
 } status_control_t;
 
 WiFiClient wifiClient;
@@ -39,7 +40,11 @@ PubSubClient client(wifiClient);
 DHT dht(DHTPIN, DHTTYPE);
 MQUnifiedsensor MQ2(BOARD, VOLTAGE_RESOLUTION, ADC_BIT_RESOLUTION, GASPIN, TYPE);
 
+portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
+
 status_control_t status_control;
 uint8_t lamp_state = 0;
+String state = "0";
+
 
 #endif

@@ -112,7 +112,7 @@ void ota_task(void *arg)
 {
   Serial.println("Hello from OTA Task");
 
-  for(;;)
+  for (;;)
   {
     Serial.print("Ver: ");
     Serial.println(version);

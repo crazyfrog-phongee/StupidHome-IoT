@@ -4,17 +4,23 @@
 #include "lcd.h"
 
 void temp_task(void *arg);
-void gas_task(void *arg);
 void light_task(void *arg);
+void local_control(void *arg);
+void wifi_detect(void *arg);
+
+int flag = 0;
+static int created = 0;
+int local_flag = 0;
+int value;
 
 void setup()
 {
   Serial.begin(9600);
 
   pinMode(LED_BUILTIN, OUTPUT);
-  // pinMode(GASPIN, INPUT);
   pinMode(LIGHTPIN, INPUT);
   pinMode(RELAYPIN, OUTPUT);
+  pinMode(BUTTONPIN, INPUT_PULLUP);
 
   initLCD();
 
@@ -23,9 +29,9 @@ void setup()
   client.setCallback(callback);
   connect_to_broker();
 
-  xTaskCreate(temp_task, "TempTask", 1024 * 5, NULL, 1, NULL);
-  // xTaskCreate(gas_task, "GasTask", 1024 * 5, NULL, 2, NULL);
+  xTaskCreate(temp_task, "TempTask", 1024 * 5, NULL, 2, NULL);
   xTaskCreate(light_task, "LightTask", 1024 * 5, NULL, 2, NULL);
+  xTaskCreate(wifi_detect, "WiFiDetectTask", 1024 * 5, NULL, 1, NULL);
 }
 
 void loop()
@@ -64,35 +70,10 @@ void temp_task(void *arg)
   }
 }
 
-void gas_task(void *arg)
-{
-  Serial.println("Hello from Gas Measurement Task");
-
-  for (;;)
-  {
-    int sensor_Aout = analogRead(GASPIN); /* Analog value read function */
-    Serial.print("Gas Sensor: ");
-    Serial.print(sensor_Aout); /* Read value printed */
-
-    if (sensor_Aout > 1800)
-    {
-      Serial.println("Gas");
-      digitalWrite(LED_BUILTIN, LOW);
-    }
-    else
-    {
-      Serial.println("No Gas");
-      digitalWrite(LED_BUILTIN, HIGH);
-    }
-
-    vTaskDelay(2000 / portTICK_PERIOD_MS);
-  }
-}
-
 void light_task(void *arg)
 {
   Serial.println("Hello from Light Task");
-  String state = "";
+  int enable_task = 0;
   for (;;)
   {
     if (status_control == DISABLE)
@@ -109,13 +90,109 @@ void light_task(void *arg)
       client.publish(MQTT_LED_TOPIC, state.c_str());
       digitalWrite(LED_BUILTIN, lamp_state);
     }
+    
+    if (status_control != LOCAL)
+    {
+      if (strcmp(state.c_str(), "1") == 0)
+      {
+        digitalWrite(RELAYPIN, HIGH);
+        Serial.println("Turn on the lamp by light task button");
+      } else if (strcmp(state.c_str(), "0") == 0)
+      {
+        digitalWrite(RELAYPIN, LOW);
+        Serial.println("Turn off the lamp by light task button");
+      }
+    }
 
-    if (strcmp(state.c_str(), "1") == 0)
+    vTaskDelay(10000 / portTICK_PERIOD_MS);
+  }
+}
+
+void local_control(void *arg)
+{
+  Serial.println("Hello from Local Control Task");
+
+  for (;;)
+  {
+    if (digitalRead(BUTTONPIN) == LOW && local_flag == 1)
     {
-      digitalWrite(RELAYPIN, HIGH);
-    } else if (strcmp(state.c_str(), "0") == 0)
+      delay(200);
+      value = !value;
+      digitalWrite(RELAYPIN, value);
+      digitalWrite(LED_BUILTIN, value);
+
+      if (value == 1)
+      {
+        Serial.println("Turn on the lamp by local button");
+      }
+      else
+      {
+        Serial.println("Turn off the lamp by local button");
+      }
+    }
+
+    if (local_flag == 0)
     {
-      digitalWrite(RELAYPIN, LOW);
+      vTaskDelay(10000 / portTICK_PERIOD_MS);
+    }
+    else 
+    {
+      vTaskDelay(1000 / portTICK_PERIOD_MS);
+    }
+  }
+}
+
+void wifi_detect(void *arg)
+{
+  Serial.println("Hello from WiFi Detect Task");
+
+  for (;;)
+  {
+    if (WiFi.status() != WL_CONNECTED && flag == 0)
+    {
+      if (created == 0)
+      {
+        xTaskCreate(local_control, "LocalControlTask", 1024 * 5, NULL, 2, NULL);
+        created = 1;
+      }
+      else
+      {
+        Serial.println("Resume Local Control Task");
+      }
+      local_flag = 1;
+      flag = 1;
+      status_control = LOCAL;
+      value = (strcmp(state.c_str(), "1") == 0)? 1: 0;
+    } 
+    else if (WiFi.status() == WL_CONNECTED && flag == 1)
+    {
+      Serial.println("Suspend Local Control Task");
+      flag = 0;
+      status_control = DISABLE;
+      local_flag = 0;
+      if (!client.connected())
+      {
+        connect_to_broker();
+      }
+    }
+    else if (WiFi.status() != WL_CONNECTED && flag == 1)
+    {
+      setup_wifi();
+    }
+
+    switch (WiFi.status())
+    {
+      case WL_CONNECTED:
+        Serial.println("Status connection between Device and WiFi: Connected");
+        break;
+      case WL_DISCONNECTED:
+        Serial.println("Status connection between Device and WiFi: Disconnected");
+        break;
+      case WL_NO_SSID_AVAIL:
+        Serial.println("Status connection between Device and WiFi: No SSID Available");
+        break;
+      default:
+        break;
     }
 
     vTaskDelay(10000 / portTICK_PERIOD_MS);
