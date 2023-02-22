@@ -17,7 +17,32 @@ Integrate PlatformIO into Visual Studio Code on top of [PlatformIO Core](http://
 
 * Install [PlatformIO Core](http://docs.platformio.org/en/stable/installation.html)
 
-## Setup
+![install](references\image\readme-install.png)
+
+* After the download is complete, you still need Reload
+
+![reload](references\image\readme-reload.png)
+
+* After Reload, you will be prompted to install PlatformIO Core, which takes a little time.
+
+* After the installation is successful, you need to reload again. After the Reload, the PlatformIO is installed.
+
+* In the lower left corner of the VSCode, you can see that there’s one more icon, please see the picture(①), which is the PlatformIO plugin, and then click ② Open Project to open the project.
+
+![open](references\image\readme-open-prj.png)
+
+## Setup Project
+
+### Cloning an existing repository.
+
+* Determine your HTTP clone url. On Github it's probably something like ***https://github.com/crazyfrog-phongee/StupidHome-IoT.git***. Should be on the project's page somewhere.
+
+		cd ~/Desktop
+		git clone {{the link you just copied}} Project
+Example: 
+        git clone https://github.com/crazyfrog-phongee/StupidHome-IoT.git
+
+* This creates a directory named "Project", clones the repository there and adds a remote named "origin" back to the source.
 
 * Use existing project
 
@@ -25,21 +50,21 @@ Integrate PlatformIO into Visual Studio Code on top of [PlatformIO Core](http://
 
 * Create new project
 
-  In terminal, run `platformio init --board <your_board_identifier>` to initialize a new PlatformIO project, then open the project folder in VS Code. Refer to [User Guide](http://docs.platformio.org/en/stable/userguide/cmd_init.html) for `platformio init` command. For how to find Board Identifier, you could refer to [this](http://docs.platformio.org/en/stable/quickstart.html#board-identifier).
+  In terminal, run `platformio init --board <your_board_identifier>` to initialize a new PlatformIO project, then open the project folder in VS Code. Refer to [User Guide](http://docs.platformio.org/en/stable/userguide/cmd_init.html) for `platformio init` command. For how to find Board Identifier, you could refer to [this](http://docs.platformio.org/en/stable/quickstart.html#board-identifier).*
 
 ## Usage
 
 * **Build PlatformIO project**: use shortcut `Ctrl+Alt+B`, or press `F1` and then select/type `PlatformIO: Build`, or right click the Text Editor and then click `PlatformIO: Build` in context menu
 
-![build](images/build.gif)
+![build](references\image\readme-build.png)
 
 * **Upload firmware to devices**: use shortcut `Ctrl+Alt+u`, or press `F1` and then select/type `PlatformIO: Upload`, or right click the Text Editor and then click `PlatformIO: Upload` in context menu
 
-![upload](images/upload.gif)
+![upload](references\image\readme-upload.png)
 
 * **Open Serial Monitor**: use shortcut `Ctrl+Alt+S`, or press `F1` and then select/type `PlatformIO: Open Serial Monitor`, or right click the Text Editor and then click `PlatformIO: Open Serial Monitor` in context menu
 
-![openSerialMonitor](images/openSerialMonitor.gif)
+![openSerialMonitor](references\image\readme-serial.png)
 
 ## Telemetry data
 
