@@ -17,7 +17,7 @@ Integrate PlatformIO into Visual Studio Code on top of [PlatformIO Core](http://
 
 * Install [PlatformIO Core](http://docs.platformio.org/en/stable/installation.html)
 
-![install](StupidHome-IoT\references\image\readme-install.png)
+![install](references/image/readme-install.png)
 
 * After the download is complete, you still need Reload
 
