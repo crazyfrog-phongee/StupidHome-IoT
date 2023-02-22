@@ -21,7 +21,7 @@ Integrate PlatformIO into Visual Studio Code on top of [PlatformIO Core](http://
 
 * After the download is complete, you still need Reload
 
-![reload](references\image\readme-reload.png)
+![reload](references/image/readme-reload.png)
 
 * After Reload, you will be prompted to install PlatformIO Core, which takes a little time.
 
@@ -29,7 +29,7 @@ Integrate PlatformIO into Visual Studio Code on top of [PlatformIO Core](http://
 
 * In the lower left corner of the VSCode, you can see that there’s one more icon, please see the picture(①), which is the PlatformIO plugin, and then click ② Open Project to open the project.
 
-![open](references\image\readme-open-prj.png)
+![open](references/image/readme-open-prj.png)
 
 ## Setup Project
 
@@ -56,15 +56,15 @@ Example:
 
 * **Build PlatformIO project**: use shortcut `Ctrl+Alt+B`, or press `F1` and then select/type `PlatformIO: Build`, or right click the Text Editor and then click `PlatformIO: Build` in context menu
 
-![build](references\image\readme-build.png)
+![build](references/image/readme-build.png)
 
 * **Upload firmware to devices**: use shortcut `Ctrl+Alt+u`, or press `F1` and then select/type `PlatformIO: Upload`, or right click the Text Editor and then click `PlatformIO: Upload` in context menu
 
-![upload](references\image\readme-upload.png)
+![upload](references/image/readme-upload.png)
 
 * **Open Serial Monitor**: use shortcut `Ctrl+Alt+S`, or press `F1` and then select/type `PlatformIO: Open Serial Monitor`, or right click the Text Editor and then click `PlatformIO: Open Serial Monitor` in context menu
 
-![openSerialMonitor](references\image\readme-serial.png)
+![openSerialMonitor](references/image/readme-serial.png)
 
 ## Telemetry data
 
