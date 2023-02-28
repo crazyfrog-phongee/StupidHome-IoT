@@ -37,7 +37,7 @@ typedef enum
 WiFiClient wifiClient;
 PubSubClient client(wifiClient);
 
-DHT dht(DHTPIN, DHTTYPE);
+DHT dht(DHTPIN, DHTTYPE); /* Initialize DHT Sensor */
 MQUnifiedsensor MQ2(BOARD, VOLTAGE_RESOLUTION, ADC_BIT_RESOLUTION, GASPIN, TYPE);
 
 portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;

@@ -1,0 +1,12 @@
+ESP32:
+	Module DHT11:	GPIO25, VCC(3.3), GND
+	Module MQ2:	GPIO26(Digital), GPIO35(Analog), VCC(3.3), GND
+	Module AS:	GPIO27(Digital), GPIO34(Analog), VCC(3.3), GND
+	Module Relay:	GPIO32(Digital), VCC(VIN-5V), GND
+	Module LCD+I2C:	GPIO21(SDA), GPIO22(SCL), VCC(VIN-5V), GND
+	Còi:		GPIO33(Digital), GND
+
+Ngoài ra:
+	Câu ra thêm GPIO18, GPIO19 ra backup
+	Câu thêm VCC(3.3), VIN(5V), GND ra backup.
+	Vẽ thêm Module LM2596 backup

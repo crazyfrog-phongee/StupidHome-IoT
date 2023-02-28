@@ -1,5 +1,6 @@
 #include "mqtt.h"
 
+/* Setup device connect to WiFi Network */
 void setup_wifi(void)
 {
     Serial.print("Connecting to ");
@@ -15,6 +16,7 @@ void setup_wifi(void)
     Serial.println(WiFi.localIP());
 }
 
+/* Setup devive connect to Broker MQTT Server */
 void connect_to_broker() 
 {
     while (!client.connected()) {

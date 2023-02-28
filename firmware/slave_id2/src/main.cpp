@@ -3,8 +3,8 @@
 #include "mqtt.h"
 #include "lcd.h"
 
-void temp_task(void *arg);
-void light_task(void *arg);
+void temp_task(void *arg);  /* Task node communicating Temp Sensor */
+void light_task(void *arg); /* Task node communicating Light Sensor */
 void local_control(void *arg);
 void wifi_detect(void *arg);
 
@@ -15,8 +15,9 @@ int value;
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(9600); /* Setup tần số cổng Serial Debug */
 
+  /* Setup direction of peripheral pins */
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(LIGHTPIN, INPUT);
   pinMode(RELAYPIN, OUTPUT);
@@ -24,11 +25,12 @@ void setup()
 
   initLCD();
 
-  setup_wifi();
-  client.setServer(MQTT_SERVER, MQTT_PORT);
-  client.setCallback(callback);
-  connect_to_broker();
+  setup_wifi(); /* Function call setup_wifi() được define ở mqtt.cpp */
+  client.setServer(MQTT_SERVER, MQTT_PORT); /* Setup Server MQTT Broker và PORT */
+  client.setCallback(callback); /* Setup callback() fucntion khi gateway nhận được topic từ Broker */
+  connect_to_broker();  /* Connect tới Broker */
 
+  /* Tạo task xử lý ngoại vi */
   xTaskCreate(temp_task, "TempTask", 1024 * 5, NULL, 2, NULL);
   xTaskCreate(light_task, "LightTask", 1024 * 5, NULL, 2, NULL);
   xTaskCreate(wifi_detect, "WiFiDetectTask", 1024 * 5, NULL, 1, NULL);

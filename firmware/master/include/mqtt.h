@@ -12,6 +12,7 @@
 #define MQTT_TEMPERATURE_TOPIC_NODEID1  "NodeID1/Temp"
 #define MQTT_HUMIDITY_TOPIC_NODEID1     "NodeID1/Humid"
 #define MQTT_GAS_TOPIC_NODEID1          "NodeID1/Gas"
+
 #define MQTT_TEMPERATURE_TOPIC_NODEID2  "NodeID2/Temp"
 #define MQTT_HUMIDITY_TOPIC_NODEID2     "NodeID2/Humid"
 #define MQTT_LED_TOPIC                  "NodeID2/LED"

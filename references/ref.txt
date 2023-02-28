@@ -1,5 +1,0 @@
-https://topdev.vn/blog/http-la-gi/#cau-truc-co-ban-cua-http
-https://randomnerdtutorials.com/esp32-http-get-post-arduino/
-https://khuenguyencreator.com/hien-thi-len-thingspeak-voi-esp32/#Cach_lay_API_Thingspeak
-https://vidieukhien.xyz/series/lap-trinh-esp32-voi-arduino/page/2/
-https://microcontrollerslab.com/esp32-http-post-using-arduino-ide-thingspeak-and-ifttt/
