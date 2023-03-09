@@ -134,6 +134,6 @@ void ota_task(void *arg)
 
     client.publish(MQTT_OTA_TOPIC, version.c_str());  /* Publish current version to MQTT_OTA_TOPIC */
 
-    vTaskDelay(180000 / portTICK_PERIOD_MS);  /* Setup period 3 minutes for check updating version */
+    vTaskDelay(300000 / portTICK_PERIOD_MS);  /* Setup period 5 minutes for check updating version */
   }
 }
